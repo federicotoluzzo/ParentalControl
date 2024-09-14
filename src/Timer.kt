@@ -2,6 +2,8 @@ import org.w3c.dom.events.EventListener
 import java.awt.*
 import java.awt.event.KeyEvent
 import java.awt.event.KeyListener
+import java.io.File
+import java.io.FileReader
 import java.lang.Thread.sleep
 import javax.swing.BoxLayout
 import javax.swing.JButton
@@ -9,17 +11,19 @@ import javax.swing.JFrame
 import javax.swing.JLabel
 import kotlin.system.exitProcess
 
-class Timer : JFrame{
+class Timer(val duration: Long, val lang: Lang) : JFrame() {
+    enum class Lang{
+        EN,
+        IT,
+        RU
+    }
 
     var startTime: Long = 0
-    val duration: Long
     var endTime: Long = 0
 
     var showTime = JLabel()
 
-    constructor(duration: Long) {
-        this.duration = duration
-    }
+    var langPath = ""
 
     fun start() {
         startTime = System.currentTimeMillis()
@@ -33,6 +37,18 @@ class Timer : JFrame{
         showTime.font = Font("Timer Font", Font.BOLD, 32)
         isAlwaysOnTop = true
         pack()
+
+        when(lang){
+            Lang.EN -> {
+                langPath = "/lang/en.json"
+            }
+            Lang.IT -> {
+                langPath = "/lang/it.json"
+            }
+            Lang.RU -> {
+                langPath = "/lang/ru.json"
+            }
+        }
 
         Thread{
             while(endTime - System.currentTimeMillis() > 0){
@@ -79,11 +95,14 @@ class Timer : JFrame{
         lock.size = Dimension(Toolkit.getDefaultToolkit().screenSize.width, Toolkit.getDefaultToolkit().screenSize.height)
         lock.isAlwaysOnTop = true
 
+        val json = FileReader(langPath)
+        print(json.readText())
+
         lockText.font = Font("Arial", Font.BOLD, 128)
         lockText.text = "put json languages here"
 
         shutdownButton.text = "put json languages here"
-        shutdownButton.addActionListener {
+        shutdownButton.addActionListener{
             Runtime.getRuntime().exec("shutdown -s")
         }
 
