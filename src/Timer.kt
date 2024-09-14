@@ -1,7 +1,5 @@
 import org.w3c.dom.events.EventListener
-import java.awt.Color
-import java.awt.FlowLayout
-import java.awt.Font
+import java.awt.*
 import java.awt.event.KeyEvent
 import java.awt.event.KeyListener
 import java.lang.Thread.sleep
@@ -34,11 +32,12 @@ class Timer : JFrame{
         pack()
 
         Thread{
-            while(true){
+            while(endTime - System.currentTimeMillis() > 0){
                 showTime.text = getClock()
                 sleep(1000)
                 pack()
             }
+            lockScreen()
         }.start()
     }
 
@@ -57,5 +56,14 @@ class Timer : JFrame{
         hoursLeft = timeLeft % 60
 
         return "$hoursLeft:$minutesLeft:$secondsLeft"
+    }
+
+    fun lockScreen(){
+        val lock = JFrame()
+        lock.isUndecorated = true
+        lock.background = Color(255,0,0, 128)
+        lock.size = Dimension(Toolkit.getDefaultToolkit().screenSize.width, Toolkit.getDefaultToolkit().screenSize.height)
+        lock.isAlwaysOnTop = true
+        lock.isVisible = true
     }
 }
